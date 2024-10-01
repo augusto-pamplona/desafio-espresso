@@ -4,6 +4,7 @@ module Api
   module V1
     class ClientsController < ApplicationController
       def create
+        # company_id é somente um integer recebido pela API, não existe ainda entidade Company
         ActiveRecord::Base.transaction do
           client = Client.find_or_initialize_by(company_id: client_params[:company_id])
 
