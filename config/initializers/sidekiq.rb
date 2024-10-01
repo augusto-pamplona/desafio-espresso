@@ -20,9 +20,4 @@ Sidekiq.configure_server do |config|
   config.redis = {
     url: "redis://#{ENV['REDIS_URL']}"
   }
-
-  config.on(:startup) do
-    Sidekiq.schedule = YAML.load_file(File.expand_path("config/sidekiq_schedule.yml"))
-    Sidekiq::Scheduler.reload_schedule!
-  end
 end
