@@ -1,3 +1,14 @@
+# == Schema Information
+#
+# Table name: clients
+#
+#  id         :bigint           not null, primary key
+#  erp_key    :string
+#  erp_secret :string
+#  created_at :datetime         not null
+#  updated_at :datetime         not null
+#  company_id :integer
+#
 require 'rails_helper'
 
 RSpec.describe Client, type: :model do
