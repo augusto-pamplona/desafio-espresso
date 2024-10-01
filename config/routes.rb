@@ -3,6 +3,14 @@ Rails.application.routes.draw do
   # Can be used by load balancers and uptime monitors to verify that the app is live.
   get "up" => "rails/health#show", as: :rails_health_check
 
+  if Rails.env.production? || Rails.env.staging?
+    Sidekiq::Web.use Rack::Auth::Basic do |username, password|
+      username == ENV["SIDEKIQ_USER"] && password == ENV["SIDEKIQ_PASSWORD"]
+    end
+  end
+
+  mount Sidekiq::Web => "/sidekiq"
+
   namespace :api do
     namespace :v1 do
       resources :clients, only: [ :create ]
