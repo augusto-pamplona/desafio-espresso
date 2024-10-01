@@ -12,8 +12,9 @@ module Api
           client.erp_secret = client_params[:erp_secret]
 
           if client.save
-            # TODO: Create OMIE integration
-            render json: { "message" => "Client created", "client" => client.attributes }, status: :created
+            OmieCredentialsWorker.perform_async(client.attributes.except("created_at", "updated_at"))
+
+            render json: { "message" => "Client created and OMIE validate credential initialized", "client" => client.attributes }, status: :created
           else
             render json: { "message" => "Client not created", "errors" => client.errors.full_messages }, status: :unprocessable_entity
           end

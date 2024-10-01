@@ -15,7 +15,7 @@ module Api
 
             expect(response).to have_http_status(:created)
             json_response = JSON.parse(response.body)
-            expect(json_response['message']).to eq('Client created')
+            expect(json_response['message']).to eq('Client created and OMIE validate credential initialized')
             expect(json_response['client']['company_id']).to eq(valid_attributes[:company_id])
           end
         end
