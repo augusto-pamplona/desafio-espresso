@@ -5,8 +5,8 @@ module Api
     RSpec.describe WebhooksController, type: :controller do
       let(:client) { create(:client) }
       let(:webhook) { create(:webhook, client: client) }
-      let(:valid_attributes) { { client_id: client.id, url: 'http://example.com', kind: 1 } }
-      let(:invalid_attributes) { { client_id: client.id, url: nil, kind: nil } }
+      let(:valid_attributes) { { client_id: client.id, company_id: rand(999), url: 'http://example.com', kind: 1 } }
+      let(:invalid_attributes) { { client_id: nil, company_id: nil, url: nil, kind: nil } }
 
       describe 'POST #create' do
         context 'when the request is valid' do
@@ -19,18 +19,9 @@ module Api
             json_response = JSON.parse(response.body)
             expect(json_response['message']).to eq('Webhook created')
             expect(json_response['webhook']['client_id']).to eq(client.id)
+            expect(json_response['webhook']['company_id']).to eq(valid_attributes[:company_id])
             expect(json_response['webhook']['url']).to eq('http://example.com')
             expect(json_response['webhook']['kind']).to eq("client")
-          end
-        end
-
-        context 'when the client does not exist' do
-          it 'returns a 404 not found error' do
-            post :create, params: { client_id: 0, url: 'http://example.com', kind: 1 }
-
-            expect(response).to have_http_status(:not_found)
-            json_response = JSON.parse(response.body)
-            expect(json_response['message']).to eq('Client must exist')
           end
         end
 
@@ -41,7 +32,7 @@ module Api
             expect(response).to have_http_status(:unprocessable_entity)
             json_response = JSON.parse(response.body)
             expect(json_response['message']).to eq('Webhook not created')
-            expect(json_response['errors']).to include("Url can't be blank", "Kind can't be blank")
+            expect(json_response['errors']).to include("Url can't be blank", "Kind can't be blank", "Company can't be blank")
           end
         end
 
@@ -61,13 +52,13 @@ module Api
       end
 
       describe 'GET #index' do
-        context 'when the client exists and has webhooks' do
+        context 'when the company_id exists and has webhooks' do
           before do
             webhook
           end
 
-          it 'returns the client\'s webhooks with a 200 status' do
-            get :index, params: { client_id: client.id }
+          it 'returns the company_id\'s webhooks with a 200 status' do
+            get :index, params: { company_id: webhook.company_id }
 
             expect(response).to have_http_status(:ok)
             json_response = JSON.parse(response.body)
@@ -77,9 +68,9 @@ module Api
           end
         end
 
-        context 'when the client exists but has no webhooks' do
+        context 'when the company_id exists but has no webhooks' do
           it 'returns an empty list with a 200 status' do
-            get :index, params: { client_id: client.id }
+            get :index, params: { company_id: valid_attributes[:company_id] }
 
             expect(response).to have_http_status(:ok)
             json_response = JSON.parse(response.body)
@@ -87,13 +78,13 @@ module Api
           end
         end
 
-        context 'when the client does not exist' do
+        context 'when the company_id does not exist' do
           it 'returns a 404 not found error' do
-            get :index, params: { client_id: 0 }
+            get :index, params: { company_id: '' }
 
             expect(response).to have_http_status(:not_found)
             json_response = JSON.parse(response.body)
-            expect(json_response['message']).to eq('Client must exist')
+            expect(json_response['message']).to eq('Company_id must exist')
           end
         end
       end

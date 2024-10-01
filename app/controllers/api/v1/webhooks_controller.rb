@@ -3,17 +3,13 @@
 module Api
   module V1
     class WebhooksController < ApplicationController
-      before_action :set_client
-
       def create
-        # Necessário que já exista um cliente cadastrado
         # kind são a finalidade do webhok client: 1, bill: 2, refund: 3
-        return render json: { "message" => "Client must exist" }, status: :not_found unless @client
-
         ActiveRecord::Base.transaction do
-          webhook = Webhook.find_or_initialize_by(client: @client, kind: webhook_params[:kind].present? ? webhook_params[:kind].to_i : nil)
+          webhook = Webhook.find_or_initialize_by(company_id: webhook_params[:company_id], kind: webhook_params[:kind].present? ? webhook_params[:kind].to_i : nil)
 
           webhook.url = webhook_params[:url]
+          webhook.client_id = webhook_params[:client_id] if webhook_params[:client_id].present?
 
           if webhook.save
             render json: { "message" => "Webhook created", "webhook" => webhook.attributes }, status: :created
@@ -26,21 +22,18 @@ module Api
       end
 
       def index
-        if @client
-          render json: { "webhooks" => @client&.webhooks }, status: :ok
+        if webhook_params[:company_id].blank?
+          render json: { "message" => "Company_id must exist" }, status: :not_found
         else
-          render json: { "message" => "Client must exist" }, status: :not_found
+          webhooks = Webhook.where(company_id: webhook_params[:company_id])
+          render json: { "webhooks" => webhooks }, status: :ok
         end
       end
 
       private
 
       def webhook_params
-        params.permit(:client_id, :url, :kind)
-      end
-
-      def set_client
-        @client = Client.find_by(id: webhook_params[:client_id])
+        params.permit(:company_id, :client_id, :url, :kind)
       end
     end
   end
