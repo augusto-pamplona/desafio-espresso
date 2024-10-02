@@ -33,7 +33,7 @@ module Api
       private
 
       def webhook_params
-        params.permit(:company_id, :client_id, :url, :kind)
+        params.require(:webhook).permit(:company_id, :client_id, :url, :kind)
       end
     end
   end

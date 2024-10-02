@@ -12,7 +12,7 @@ module Api
         context 'when the request is valid' do
           it 'creates a new Webhook and returns a success message' do
             expect {
-              post :create, params: valid_attributes
+              post :create, params: { webhook: valid_attributes }
             }.to change(Webhook, :count).by(1)
 
             expect(response).to have_http_status(:created)
@@ -27,7 +27,7 @@ module Api
 
         context 'when the request is invalid' do
           it 'does not create a Webhook and returns error messages' do
-            post :create, params: invalid_attributes
+            post :create, params: { webhook: invalid_attributes }
 
             expect(response).to have_http_status(:unprocessable_entity)
             json_response = JSON.parse(response.body)
@@ -42,7 +42,7 @@ module Api
           end
 
           it 'returns a 500 error with the exception message' do
-            post :create, params: valid_attributes
+            post :create, params: { webhook: valid_attributes }
 
             expect(response).to have_http_status(:internal_server_error)
             json_response = JSON.parse(response.body)
@@ -58,7 +58,7 @@ module Api
           end
 
           it 'returns the company_id\'s webhooks with a 200 status' do
-            get :index, params: { company_id: webhook.company_id }
+            get :index, params: { webhook: { company_id: webhook.company_id } }
 
             expect(response).to have_http_status(:ok)
             json_response = JSON.parse(response.body)
@@ -70,7 +70,7 @@ module Api
 
         context 'when the company_id exists but has no webhooks' do
           it 'returns an empty list with a 200 status' do
-            get :index, params: { company_id: valid_attributes[:company_id] }
+            get :index, params: { webhook: { company_id: valid_attributes[:company_id] } }
 
             expect(response).to have_http_status(:ok)
             json_response = JSON.parse(response.body)
@@ -80,7 +80,7 @@ module Api
 
         context 'when the company_id does not exist' do
           it 'returns a 404 not found error' do
-            get :index, params: { company_id: '' }
+            get :index, params: { webhook: { company_id: '' } }
 
             expect(response).to have_http_status(:not_found)
             json_response = JSON.parse(response.body)
