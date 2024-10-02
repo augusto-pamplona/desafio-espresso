@@ -2,15 +2,17 @@
 #
 # Table name: bills
 #
-#  id            :bigint           not null, primary key
-#  account_code  :string
-#  category_code :string
-#  client_code   :string
-#  cost          :float
-#  due_date      :string
-#  created_at    :datetime         not null
-#  updated_at    :datetime         not null
-#  client_id     :bigint           not null
+#  id              :bigint           not null, primary key
+#  account_code    :string
+#  category_code   :string
+#  client_code     :string
+#  cost            :float
+#  due_date        :string
+#  error_from_omie :text
+#  status          :integer
+#  created_at      :datetime         not null
+#  updated_at      :datetime         not null
+#  client_id       :bigint           not null
 #
 # Indexes
 #
@@ -23,6 +25,7 @@
 FactoryBot.define do
   factory :bill do
     association :client
+    status { :sent }
     client_code { "client_code_example" }
     category_code { "category_code_example" }
     account_code { "account_code_example" }

@@ -2,15 +2,17 @@
 #
 # Table name: bills
 #
-#  id            :bigint           not null, primary key
-#  account_code  :string
-#  category_code :string
-#  client_code   :string
-#  cost          :float
-#  due_date      :string
-#  created_at    :datetime         not null
-#  updated_at    :datetime         not null
-#  client_id     :bigint           not null
+#  id              :bigint           not null, primary key
+#  account_code    :string
+#  category_code   :string
+#  client_code     :string
+#  cost            :float
+#  due_date        :string
+#  error_from_omie :text
+#  status          :integer
+#  created_at      :datetime         not null
+#  updated_at      :datetime         not null
+#  client_id       :bigint           not null
 #
 # Indexes
 #
@@ -30,6 +32,7 @@ RSpec.describe Bill, type: :model do
     it { should validate_presence_of(:account_code) }
     it { should validate_presence_of(:due_date) }
     it { should validate_presence_of(:cost) }
+    it { should validate_presence_of(:status) }
     it { should validate_numericality_of(:cost).is_greater_than_or_equal_to(0) }
   end
 
