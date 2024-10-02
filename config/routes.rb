@@ -13,6 +13,7 @@ Rails.application.routes.draw do
 
   namespace :api do
     namespace :v1 do
+      resources :bills, only: [ :create, :index ]
       resources :clients, only: [ :create ]
       resources :webhooks, only: [ :create, :index ]
     end

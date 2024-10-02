@@ -14,7 +14,7 @@ module Api
           client.assign_attributes(erp_key: client_params[:erp_key], erp_secret: client_params[:erp_secret])
 
           if client.save
-            OmieCredentialsWorker.perform_async(client.attributes.except("created_at", "updated_at"))
+            OmieCredentialsWorker.perform_async(client.as_json(except: [ :created_at, :updated_at ]))
             render json: { "message" => "Client created and OMIE validate credential initialized, you will receive information in your webhook kind: 1", "client" => client.attributes }, status: :created
           else
             render json: { "message" => "Client not created", "errors" => client.errors.full_messages }, status: :unprocessable_entity
