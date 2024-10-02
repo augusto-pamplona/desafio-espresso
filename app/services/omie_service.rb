@@ -4,27 +4,27 @@ class OmieService
   include HTTParty
   base_uri "https://app.omie.com.br/api/v1"
 
-  def initialize(client_params)
-    @client_params = client_params.with_indifferent_access
+  def initialize(params)
+    @params = params.with_indifferent_access
   end
 
   def check_credentials
-    validate_credentials
+    add_default_username
+  end
+
+  def submit_bill
+    new_bill
   end
 
   private
-
-  def validate_credentials
-    add_default_user
-  end
 
   def add_default_user
     options = {
       headers: { "Content-Type" => "application/json" },
       body: {
         call: "IncluirCliente",
-        app_key: @client_params["erp_key"],
-        app_secret: @client_params["erp_secret"],
+        app_key: @params["erp_key"],
+        app_secret: @params["erp_secret"],
         param: [
           {
             codigo_cliente_integracao: "Teste" + rand(9999).to_s,
@@ -37,5 +37,28 @@ class OmieService
     }
 
     self.class.post("/geral/clientes/", options)
+  end
+
+  def new_bill
+    options = {
+      headers: { "Content-Type" => "application/json" },
+      body: {
+        call: "IncluirContaPagar",
+        app_key: @params["erp_key"],
+        app_secret: @params["erp_secret"],
+        param: [
+          {
+            codigo_lancamento_integracao: @params["id"].to_s,
+            codigo_cliente_fornecedor: @params["client_code"].to_i,
+            data_vencimento: @params["due_date"],
+            valor_documento: @params["cost"],
+            codigo_categoria: @params["category_code"],
+            data_previsao: @params["due_date"]
+          }
+        ]
+      }.to_json
+    }
+
+    self.class.post("/financas/contapagar/", options)
   end
 end
