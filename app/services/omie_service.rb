@@ -9,11 +9,15 @@ class OmieService
   end
 
   def check_credentials
-    add_default_username
+    add_default_user
   end
 
   def submit_bill
     new_bill
+  end
+
+  def check_bill
+    get_status_bill
   end
 
   private
@@ -54,6 +58,24 @@ class OmieService
             valor_documento: @params["cost"],
             codigo_categoria: @params["category_code"],
             data_previsao: @params["due_date"]
+          }
+        ]
+      }.to_json
+    }
+
+    self.class.post("/financas/contapagar/", options)
+  end
+
+  def get_status_bill
+    options = {
+      headers: { "Content-Type" => "application/json" },
+      body: {
+        call: "ConsultarContaPagar",
+        app_key: @params["erp_key"],
+        app_secret: @params["erp_secret"],
+        param: [
+          {
+            codigo_lancamento_omie: @params["omie_code"].to_i
           }
         ]
       }.to_json

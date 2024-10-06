@@ -14,6 +14,10 @@ class WebhookService
     send_notification(2, build_bill_submitted_body)
   end
 
+  def send_paid_bill
+    send_notification(3, build_bill_paid_body)
+  end
+
   private
 
   def send_notification(kind, body)
@@ -36,7 +40,14 @@ class WebhookService
   def build_bill_submitted_body
     bill_error_message = @params["error_from_omie"].present? ? JSON.parse(@params["error_from_omie"]).to_s : "Bill worker error"
     {
-      message: @response_params.success? ? "Bill submitted in OMIE" : bill_error_message,
+      message: @response_params.success? ? "Bill submitted in OMIE, code: #{@response_params["codigo_lancamento_omie"]}" : bill_error_message,
+      status: @response_params.success? ? :ok : @response_params.code
+    }
+  end
+
+  def build_bill_paid_body
+    {
+      message: @response_params.success? ? "Bill successfuly refund for code: #{@params["omie_code"]}" : "Error on omie request",
       status: @response_params.success? ? :ok : @response_params.code
     }
   end

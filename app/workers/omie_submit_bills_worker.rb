@@ -29,6 +29,7 @@ class OmieSubmitBillsWorker
 
     if response.success?
       bill.submitted!
+      bill.omie_code = response["codigo_lancamento_omie"]
     else
       bill.error_from_omie = response
       bill.error!
