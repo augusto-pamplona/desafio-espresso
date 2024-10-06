@@ -24,7 +24,7 @@ class WebhookService
     webhook = Webhook.find_by(company_id: @params["company_id"], kind: kind)
 
     if webhook.present?
-      response = HTTParty.post(webhook.url, body: body.to_json, headers: { "Content-Type" => "application/json" })
+      HTTParty.post(webhook.url, body: body.to_json, headers: { "Content-Type" => "application/json" })
     end
   rescue StandardError => e
     Rails.logger.error("Error sending webhook notification: #{e.message}")
