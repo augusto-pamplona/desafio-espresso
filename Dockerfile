@@ -39,6 +39,9 @@ RUN bundle install && \
 # Copy application code
 COPY . .
 
+# Ensure bin/rails is executable
+RUN chmod +x ./bin/rails
+
 # Precompile bootsnap code for faster boot times
 RUN bundle exec bootsnap precompile app/ lib/
 
@@ -58,6 +61,6 @@ USER 1000:1000
 # Entrypoint prepares the database.
 ENTRYPOINT ["/rails/bin/docker-entrypoint"]
 
-# Start Foreman by default
+# Start the server using Foreman by default
 EXPOSE 3000
 CMD ["bundle", "exec", "foreman", "start"]
