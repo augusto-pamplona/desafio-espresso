@@ -4,6 +4,7 @@ gem "rails", "~> 7.2.1"
 gem "pg", "~> 1.1"
 
 gem "bootsnap", require: false
+gem "foreman"
 gem "httparty"
 gem "puma", ">= 5.0"
 gem "sidekiq"

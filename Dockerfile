@@ -42,9 +42,6 @@ COPY . .
 # Precompile bootsnap code for faster boot times
 RUN bundle exec bootsnap precompile app/ lib/
 
-
-
-
 # Final stage for app image
 FROM base
 
@@ -61,6 +58,6 @@ USER 1000:1000
 # Entrypoint prepares the database.
 ENTRYPOINT ["/rails/bin/docker-entrypoint"]
 
-# Start the server by default, this can be overwritten at runtime
+# Start Foreman by default
 EXPOSE 3000
-CMD ["./bin/rails", "server"]
+CMD ["bundle", "exec", "foreman", "start"]
