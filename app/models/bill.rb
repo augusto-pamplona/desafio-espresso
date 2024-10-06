@@ -9,6 +9,7 @@
 #  cost            :float
 #  due_date        :string
 #  error_from_omie :text
+#  omie_code       :bigint
 #  status          :integer
 #  created_at      :datetime         not null
 #  updated_at      :datetime         not null
@@ -25,10 +26,13 @@
 class Bill < ApplicationRecord
   belongs_to :client
 
+  scope :submitted,    -> { where(status: "submitted") }
+
   # sent: Enviado para OMIE
   # submitted: Criado conta a pagar no OMIE
   # error: Algo de errado, seja antes ou durante OMIE
-  enum status: { sent: 0, submitted: 1, error: 2 }
+  # paid: Omie deu baixa na conta a pagar
+  enum status: { sent: 0, submitted: 1, error: 2, paid: 3 }
 
   validates :client, presence: true
   validates :client_code, presence: true

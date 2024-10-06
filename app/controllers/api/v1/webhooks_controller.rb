@@ -4,7 +4,7 @@ module Api
   module V1
     class WebhooksController < ApplicationController
       def create
-        # kind são a finalidade do webhok client: 1, bill: 2, refund: 3
+        # kind são a finalidade do webhok client: 1, bill: 2, refund: 3, paid: 4
         ActiveRecord::Base.transaction do
           webhook = Webhook.find_or_initialize_by(company_id: webhook_params[:company_id], kind: webhook_params[:kind].present? ? webhook_params[:kind].to_i : nil)
 

@@ -9,6 +9,7 @@
 #  cost            :float
 #  due_date        :string
 #  error_from_omie :text
+#  omie_code       :bigint
 #  status          :integer
 #  created_at      :datetime         not null
 #  updated_at      :datetime         not null
