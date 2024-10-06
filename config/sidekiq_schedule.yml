@@ -1,0 +1,6 @@
+# config/sidekiq_schedule.yml
+
+daily_worker:
+  cron: '00 03 * * *'
+  class: DailyOmieBillsWorker
+  queue: default

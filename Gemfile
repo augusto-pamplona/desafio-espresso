@@ -7,6 +7,7 @@ gem "bootsnap", require: false
 gem "httparty"
 gem "puma", ">= 5.0"
 gem "sidekiq"
+gem "sidekiq-scheduler"
 gem "sidekiq-status"
 gem "tzinfo-data", platforms: %i[ windows jruby ]
 
