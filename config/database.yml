@@ -1,20 +1,22 @@
 default: &default
   adapter: postgresql
   encoding: unicode
- 
   pool: <%= ENV.fetch("RAILS_MAX_THREADS") { 5 } %>
-
 
 development:
   <<: *default
   database: desafio_espresso_development
+  username: postgres
+  password: password
+  host: localhost
 
 test:
   <<: *default
   database: desafio_espresso_test
+  username: postgres
+  password: password
+  host: localhost
 
 production:
   <<: *default
-  database: desafio_espresso_production
-  username: desafio_espresso
-  password: <%= ENV["DESAFIO_ESPRESSO_DATABASE_PASSWORD"] %>
+  url: <%= ENV['DATABASE_URL'] %>
