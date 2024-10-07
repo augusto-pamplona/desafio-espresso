@@ -5,9 +5,7 @@ Sidekiq.configure_client do |config|
   # accepts :expiration (optional)
   Sidekiq::Status.configure_client_middleware config, expiration: 30.minutes.to_i
 
-  config.redis = {
-    url: "redis://#{ENV['REDIS_URL']}"
-  }
+  config.redis = { url: ENV["REDIS_URL"] || "redis://localhost:6379/0" }
 end
 
 Sidekiq.configure_server do |config|
@@ -17,9 +15,7 @@ Sidekiq.configure_server do |config|
   # accepts :expiration (optional)
   Sidekiq::Status.configure_client_middleware config, expiration: 30.minutes.to_i
 
-  config.redis = {
-    url: "redis://#{ENV['REDIS_URL']}"
-  }
+  config.redis = { url: ENV["REDIS_URL"] || "redis://localhost:6379/0" }
 
   config.on(:startup) do
     Sidekiq.schedule = YAML.load_file(File.expand_path("config/sidekiq_schedule.yml"))
